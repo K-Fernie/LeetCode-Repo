@@ -1,13 +1,16 @@
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GraphTraversal {
-    public static void main(String[] args) {
-        int[][] twoDArray = { { 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 1, 0, 0} };
-        int n = 1;
-        Map<String, CellNode> nodeMap = generateNodeMap(twoDArray);
-        System.out.println(countCellsWithinSteps(twoDArray, n));
+//    public static void main(String[] args) {
+//        int[][] twoDArray = { { 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0}, {0, 0, 1, 0, 0} };
+//        int n = 2;
+//        System.out.println(countCellsWithinSteps(twoDArray, n));
+//    }
 
+    public static void main(String[] args) {
+        int[][] twoDArray = { { 1, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0} };
+        System.out.println(countCellsWithinSteps(twoDArray, 1));
     }
 
     public static int countCellsWithinSteps(int[][] arr, int n) {
@@ -15,7 +18,7 @@ public class GraphTraversal {
             Map<String, CellNode> nodeMap = generateNodeMap(arr);
             for(Map.Entry<String, CellNode> entry: nodeMap.entrySet()){
                 if(entry.getValue().val > 0){
-                    count+=stepsUp(entry.getValue(), n);
+                    count+=stepsUp(entry.getValue(), n, nodeMap, arr.length - 1);
                     count+=stepsDown(entry.getValue(),n);
                     count+=stepsRight(entry.getValue(), n);
                     count+=stepsLeft(entry.getValue(),n);
@@ -24,12 +27,16 @@ public class GraphTraversal {
             return count;
     }
 
-    public static int stepsUp(CellNode node, int n){
+    public static int stepsUp(CellNode node, int n, Map<String, CellNode> nodeMap, int y){
         int count = 0;
         CellNode currNode = node;
 
-        if(currNode.up == null){
-            return count;
+            if(currNode.up == null){
+                currNode = nodeMap.get(String.format("%s%s", currNode.x, y));
+                if(!currNode.counted){
+                     count++;
+                     currNode.setCounted(true);
+            }
         }
 
         for(int i = 0; i < n; i++){
@@ -169,22 +176,6 @@ public class GraphTraversal {
 
         public void setCounted(boolean counted){
             this.counted = counted;
-        }
-
-        public void setUp(CellNode up) {
-            this.up = up;
-        }
-
-        public void setDown(CellNode down) {
-            this.down = down;
-        }
-
-        public void setLeft(CellNode left) {
-            this.left = left;
-        }
-
-        public void setRight(CellNode right) {
-            this.right = right;
         }
 
         @Override
